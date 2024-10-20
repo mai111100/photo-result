@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enneagram Quiz</title>
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Enneagram Quiz</h1>
+        <div id="question-container">
+            <p id="question"></p>
+            <div id="choices"></div>
+        </div>
+        <button id="done-button" style="display: none;">Done</button>
+    </div>
+
+    <div id="result-container" style="display: none;">
+        <h2>Your Personality Result</h2>
+        <!-- Container to display result images -->
+        <div id="result"></div>
+        <!-- Button to download the result -->
+        <a id="download-btn" download="enneagram-result.png" style="display: none;">Download Result</a>
+    </div>
+
+    <script src="quiz.js"></script>
+</body>
+</html>
