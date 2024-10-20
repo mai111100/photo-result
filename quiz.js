@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Function to calculate and display the Enneagram type and the most compatible types
         function calculateEnneagramType() {
             const results = [
-                { type: "Reformer", score: reformerScore, image: "reformer.png" },
+                { type: "Reformer", score: reformerScore, "reformer.png" },
                 { type: "Helper", score: helperScore, image: "helper.png" },
                 { type: "Achiever", score: achieverScore, image: "achiever.png" },
                 { type: "Individualist", score: individualistScore, image: "individualist.png" },
