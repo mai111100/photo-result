@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     { investigatorScore: 0, enthusiastScore: 1 }
                 ]
             },
-            // More questions as needed...
+            // Add more questions here...
         ];
 
         // Variables for personality scores
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Function to calculate and display the Enneagram type and the most compatible types
         function calculateEnneagramType() {
             const results = [
-                { type: "Reformer", score: reformerScore, "reformer.png" },
+                { type: "Reformer", score: reformerScore, image: "reformer.png" },
                 { type: "Helper", score: helperScore, image: "helper.png" },
                 { type: "Achiever", score: achieverScore, image: "achiever.png" },
                 { type: "Individualist", score: individualistScore, image: "individualist.png" },
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Display the result image instead of text
             const resultImage = document.createElement('img');
-            resultImage.src = `/path-to-images/${imagePath}`;  // Replace with actual image path
+            resultImage.src = imagePath;  // Since all images are in the root, no need for extra paths
             resultImage.alt = topType;
 
             // Add the image to the result container
