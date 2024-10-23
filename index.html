@@ -4,32 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enneagram Quiz</title>
-    <link rel="stylesheet" href="quiz.css"> <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="quiz.css">
 </head>
 <body>
     <div class="quiz-container">
         <h1>Enneagram Quiz</h1>
 
+        <!-- Language selection before the quiz starts -->
+        <div id="language-selection">
+            <p>Do you prefer to take the journey in English or Vietnamese? - Bạn muốn bắt đầu hành trình bằng tiếng Việt hay tiếng Anh?</p>
+            <button class="language-button" data-language="english">English</button>
+            <button class="language-button" data-language="vietnamese">Vietnamese</button>
+        </div>
+
         <!-- Question container where questions will be displayed -->
-        <div id="question-container">
-            <p id="question"></p> <!-- Placeholder for the question text -->
-            <div id="choices"></div> <!-- Placeholder for answer buttons -->
+        <div id="question-container" style="display:none;">
+            <p id="question"></p>
+            <div id="choices"></div>
         </div>
 
         <!-- Button to submit an answer -->
-        <button id="done-button" style="display: none;">Done</button> <!-- Hidden initially -->
+        <button id="done-button" style="display: none;">Done</button>
     </div>
 
     <!-- Result container where the result will be shown -->
     <div id="result-container" style="display: none;">
         <h2>Your Personality Result</h2>
-        <div id="result"></div> <!-- Placeholder for result image -->
-        
-        <!-- Button to download the result -->
-        <a id="download-btn" download="enneagram-result.png" style="display: none;">Download Result</a>
+        <div id="result"></div> <!-- Placeholder for result images -->
+        <a id="download-btn" download="enneagram-result.png" style="display: none;">Download Persona</a>
     </div>
 
-    <!-- Link to the JavaScript file -->
-    <script src="quiz.js"></script>
+    <script src="quiz.js"></script> <!-- Link to the JavaScript file -->
 </body>
 </html>
