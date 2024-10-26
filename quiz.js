@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // English and Vietnamese questions
     const englishQuestions = [
+        { question: "You start your journey over the seashore...", choices: ["Imma start anyways...", "Nah, no need to mess up..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
         { question: "Not long after your departure, a forest full of food appears. What do you do?", choices: ["Gather food and plan ahead - you’ll need it for later", "Enjoy the present - why worry so much about the future?"], weights: [{ weaverScore: 1 }, { parakeetScore: 1 }] },
         { question: "As the sun sets, you reflect on your journey. What now?", choices: ["Think about how to do better next time", "Feel proud of everything you've achieved so far"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
     ];
@@ -118,9 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             ctx.drawImage(image, 0, 0);
             ctx.font = '20px Arial';
-            ctx.fillStyle = 'white';
-            ctx.textAlign = 'center';
-            ctx.fillText(`Name: ${testTakerName}`, canvas.width / 2, canvas.height - 30);
+            ctx.fillStyle = 'black';  // Set text color to black
+            ctx.textAlign = 'right';
+            
+            // Position the text in the bottom-right corner of the first section (1000 x 375)
+            const xPosition = canvas.width - 50;  // 50px from the right edge
+            const yPosition = 355;                // 20px above the bottom of the first section
+            ctx.fillText(`Name: ${testTakerName}`, xPosition, yPosition);
 
             const finalImage = new Image();
             finalImage.src = canvas.toDataURL('image/png');
