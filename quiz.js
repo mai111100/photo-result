@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let weaverScore = 0, pelicanScore = 0, flycatcherScore = 0, owlScore = 0;
     let crowScore = 0, craneScore = 0, parakeetScore = 0, eagleScore = 0, pigeonScore = 0;
 
-    // English questions
+    // English and Vietnamese questions
     const englishQuestions = [
         { question: "You start your journey over the seashore. Dark clouds roll in fast. You...", choices: ["Imma start anyways - gotta get there before the other birds do", "Nah, no need to mess up my feathers. I’ll find a safe detour"], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
         { question: "As you reach the mangroves, your wings feel heavy with unease. You decide to...", choices: ["Press on. Nothing like a challenge to shake off the nerves", "Rest first. Everything else is less important than your wellbeing"], weights: [{ flycatcherScore: 1 }, { owlScore: 1 }] },
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { question: "As the sun sets, you reflect on your journey. What now?", choices: ["Think about how to do better next time", "Feel proud of everything you've achieved so far"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
     ];
 
-    // Vietnamese questions
     const vietnameseQuestions = [
         { question: "Bạn chuẩn bị xuất phát từ bờ biển nhưng chợt thấy mây đen kéo. Bạn...", choices: ["Kệ - dân chơi không sợ mưa rơi", "Thôi khoải. Tìm đường khác an toàn hơn nè"], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
         { question: "Bay đến rừng ngập mặn thì thấy hơi mỏi nách (´〜｀*). Bạn quyết định...", choices: ["Cứ bay tiếp thôi. Càng thử thách càng vui", "Nghỉ ngơi tí đã. Sức khỏe mình mới là quan trọng nhất"], weights: [{ flycatcherScore: 1 }, { owlScore: 1 }] },
@@ -42,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { question: "Mặt trời bắt đầu lặn, bạn nhìn lại hành trình vừa qua và nghĩ...", choices: ["Nghĩ cách để lần sau làm tốt hơn nữa", "Tự hào về tất cả những gì mình đã đạt được"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
     ];
 
-    // Bird matches
+    // Bird matches for each personality type
     const birdMatches = {
         weaver: ["parakeet", "owl"],
         pelican: ["owl", "eagle"],
@@ -55,18 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
         pigeon: ["crane", "flycatcher"]
     };
 
-    // Function to display the current question
     function displayCurrentQuestion() {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
         const currentQuestion = questions[currentQuestionIndex];
-
         const questionElement = document.getElementById('question');
         const choicesContainer = document.getElementById('choices');
 
         choicesContainer.innerHTML = ''; // Clear previous choices
-        questionElement.textContent = currentQuestion.question; // Set the question text
+        questionElement.textContent = currentQuestion.question;
 
-        // Create buttons for each choice
         currentQuestion.choices.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice;
@@ -78,7 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('done-button').style.display = 'none';
     }
 
-    // Handle choice selection
     function handleChoiceClick(choiceIndex) {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
         const currentQuestion = questions[currentQuestionIndex];
@@ -98,19 +93,33 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('done-button').style.display = 'block';
     }
 
-    // Handle the 'Done' button click
     document.getElementById('done-button').addEventListener('click', () => {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
         currentQuestionIndex++;
         if (currentQuestionIndex < questions.length) {
             displayCurrentQuestion();
         } else {
-            calculateEnneagramType();
+            showNameEntry();
         }
     });
 
-    // Function to calculate and display the personality result
-    function calculateEnneagramType() {
+    // Show name entry after quiz completion
+    function showNameEntry() {
+        document.getElementById('question-container').style.display = 'none';
+        document.getElementById('name-entry').style.display = 'block';
+
+        document.getElementById('submit-name').addEventListener('click', () => {
+            const testName = document.getElementById('test-taker-name').value.trim();
+            if (!testName) {
+                alert("Please enter your name.");
+                return;
+            }
+            displayResult(testName);
+        });
+    }
+
+    // Display result with test taker's name on the image
+    function displayResult(testTakerName) {
         const results = [
             { type: "weaver", score: weaverScore },
             { type: "pelican", score: pelicanScore },
@@ -123,50 +132,62 @@ document.addEventListener('DOMContentLoaded', () => {
             { type: "pigeon", score: pigeonScore }
         ];
 
-        // Sort results by score to determine dominant type (personality) and second-highest (match)
+        // Sort by score to determine personality and best match
         results.sort((a, b) => b.score - a.score);
-        const topResult = results[0];  // This is the personality
-        const secondResult = results[1];  // This is the best match
+        const topResult = results[0];
+        const secondResult = results[1];
 
-        // Fetch matches for the topResult (personality)
+        // Determine best match from potential matches
         const potentialMatches = birdMatches[topResult.type];
         const birdMatch = potentialMatches.includes(secondResult.type) ? secondResult.type : potentialMatches[0];
 
-        // Set the language for the result images
+        // Display results with user-selected language and add name
         const languagePrefix = selectedLanguage === 'english' ? 'eng' : 'vie';
+        overlayNameOnImage(`${languagePrefix}-persona-${topResult.type}.png`, testTakerName, "Persona");
+        overlayNameOnImage(`${languagePrefix}-match-${birdMatch}.png`, testTakerName, "Match");
+    }
 
-        // Display persona and match images side by side
-        const personaImage = document.createElement('img');
-        const matchImage = document.createElement('img');
-        personaImage.src = `${languagePrefix}-persona-${topResult.type}.png`;
-        matchImage.src = `${languagePrefix}-match-${birdMatch}.png`;
-        personaImage.alt = `Your personality is ${topResult.type}`;
-        matchImage.alt = `Your match is ${birdMatch}`;
+    // Function to overlay the name on an existing image and provide download link
+    function overlayNameOnImage(imagePath, testTakerName, imageLabel) {
+        const resultContainer = document.getElementById('result-container');
+        const image = new Image();
+        image.src = imagePath;
+        
+        image.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.drawImage(image, 0, 0);
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText(`Name: ${testTakerName}`, canvas.width / 2, canvas.height - 30);
 
-        // Clear any previous results
-        const resultContainer = document.getElementById('result');
-        resultContainer.innerHTML = '';
+            const finalImage = new Image();
+            finalImage.src = canvas.toDataURL('image/png');
+            resultContainer.appendChild(finalImage);
 
-        // Append both persona and match images
-        resultContainer.appendChild(personaImage);
-        resultContainer.appendChild(matchImage);
+            // Set up the download button for each image
+            const downloadBtn = document.createElement('a');
+            downloadBtn.href = finalImage.src;
+            downloadBtn.download = `${imageLabel.toLowerCase()}-${testTakerName}.png`;
+            downloadBtn.textContent = `Download ${imageLabel}`;
+            downloadBtn.style.display = 'block';
+            resultContainer.appendChild(downloadBtn);
+        };
 
-        // Display the result container
-        document.getElementById('result-container').style.display = 'block';
-
-        // Set up the download button
-        const downloadBtn = document.getElementById('download-btn');
-        downloadBtn.style.display = 'block';
-        downloadBtn.href = personaImage.src;  // Allow downloading the persona image
+        resultContainer.style.display = 'block';
     }
 
     // Handle language selection
     document.querySelectorAll('.language-button').forEach(button => {
         button.addEventListener('click', (event) => {
             selectedLanguage = event.target.dataset.language;
-            document.getElementById('language-selection').style.display = 'none'; // Hide language selection
-            document.getElementById('question-container').style.display = 'block'; // Show question container
-            displayCurrentQuestion(); // Start the quiz
+            document.getElementById('language-selection').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+            displayCurrentQuestion();
         });
     });
 });
