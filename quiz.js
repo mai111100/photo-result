@@ -18,10 +18,9 @@
     measurementId: "G-EKVR6CJZVL"
   };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 document.addEventListener('DOMContentLoaded', () => {
     let currentQuestionIndex = 0;
@@ -144,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         overlayElement.textContent = `Completions: ${count}`;
     }
 
+    // Language selection setup
     document.querySelectorAll('.language-button').forEach(button => {
         button.addEventListener('click', () => {
             selectedLanguage = button.dataset.language;
