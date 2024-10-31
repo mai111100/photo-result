@@ -1,13 +1,7 @@
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, update, increment } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyCdY-c6fRT2qcqjTe1JiUNkuHX5xf5cRCg",
     authDomain: "test-3-83dfd.firebaseapp.com",
     databaseURL: "https://test-3-83dfd-default-rtdb.firebaseio.com",
@@ -16,45 +10,41 @@
     messagingSenderId: "208385469603",
     appId: "1:208385469603:web:d2848eb6262394a41da316",
     measurementId: "G-EKVR6CJZVL"
-  };
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+// English and Vietnamese questions
+const englishQuestions = [
+    { question: "You start your journey over the seashore...", choices: ["Imma start anyways...", "Nah, no need to mess up..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
+    { question: "Not long after your departure, a forest full of food appears. What do you do?", choices: ["Gather food and plan ahead - you’ll need it for later", "Enjoy the present - why worry so much about the future?"], weights: [{ weaverScore: 1 }, { parakeetScore: 1 }] },
+    { question: "As the sun sets, you reflect on your journey. What now?", choices: ["Think about how to do better next time", "Feel proud of everything you've achieved so far"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
+];
+
+const vietnameseQuestions = [
+    { question: "Bạn chuẩn bị xuất phát từ bờ biển...", choices: ["Kệ - dân chơi không sợ...", "Thôi khoải. Tìm đường khác..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
+    // ...add remaining questions...
+];
+
+const birdMatches = {
+    weaver: ["parakeet", "owl"],
+    pelican: ["owl", "eagle"],
+    // ...complete bird matches...
+};
+
+let currentQuestionIndex = 0;
+let selectedLanguage = null;
+let weaverScore = 0, pelicanScore = 0, flycatcherScore = 0, owlScore = 0;
+let crowScore = 0, craneScore = 0, parakeetScore = 0, eagleScore = 0, pigeonScore = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
-    let currentQuestionIndex = 0;
-    let selectedLanguage = null;
-    let weaverScore = 0, pelicanScore = 0, flycatcherScore = 0, owlScore = 0;
-    let crowScore = 0, craneScore = 0, parakeetScore = 0, eagleScore = 0, pigeonScore = 0;
-
-  // English and Vietnamese questions
-    const englishQuestions = [
-        { question: "You start your journey over the seashore...", choices: ["Imma start anyways...", "Nah, no need to mess up..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
-        { question: "Not long after your departure, a forest full of food appears. What do you do?", choices: ["Gather food and plan ahead - you’ll need it for later", "Enjoy the present - why worry so much about the future?"], weights: [{ weaverScore: 1 }, { parakeetScore: 1 }] },
-        { question: "As the sun sets, you reflect on your journey. What now?", choices: ["Think about how to do better next time", "Feel proud of everything you've achieved so far"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
-    ];
-
-    const vietnameseQuestions = [
-        { question: "Bạn chuẩn bị xuất phát từ bờ biển...", choices: ["Kệ - dân chơi không sợ...", "Thôi khoải. Tìm đường khác..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
-        // ...add remaining questions...
-    ];
-
-    // Bird matches for each personality type
-    const birdMatches = {
-        weaver: ["parakeet", "owl"],
-        pelican: ["owl", "eagle"],
-        // ...complete bird matches...
-    };
-
     function displayCurrentQuestion() {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
         const currentQuestion = questions[currentQuestionIndex];
-
-        const questionElement = document.getElementById('question');
+        document.getElementById('question').textContent = currentQuestion.question;
         const choicesContainer = document.getElementById('choices');
-
-        questionElement.textContent = currentQuestion.question;
         choicesContainer.innerHTML = '';
 
         currentQuestion.choices.forEach((choice, index) => {
@@ -70,9 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleChoiceClick(choiceIndex) {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
-        const currentQuestion = questions[currentQuestionIndex];
-        const selectedChoiceWeight = currentQuestion.weights[choiceIndex];
-
+        const selectedChoiceWeight = questions[currentQuestionIndex].weights[choiceIndex];
         weaverScore += selectedChoiceWeight.weaverScore || 0;
         pelicanScore += selectedChoiceWeight.pelicanScore || 0;
         flycatcherScore += selectedChoiceWeight.flycatcherScore || 0;
@@ -97,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNameEntry() {
         document.getElementById('question-container').style.display = 'none';
         document.getElementById('name-entry').style.display = 'block';
-
         document.getElementById('submit-name').addEventListener('click', () => {
             const testName = document.getElementById('test-taker-name').value.trim();
             if (!testName) {
@@ -114,18 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
             { type: "pelican", score: pelicanScore },
             // ...add other types and their scores...
         ];
-
         results.sort((a, b) => b.score - a.score);
         const topResult = results[0];
         const secondResult = results[1];
-
         const potentialMatches = birdMatches[topResult.type];
         const birdMatch = potentialMatches.includes(secondResult.type) ? secondResult.type : potentialMatches[0];
-
-        const languagePrefix = selectedLanguage === 'english' ? 'eng' : 'vie';
-        overlayNameOnImage(`${languagePrefix}-persona-${topResult.type}.png`, testTakerName, "Persona");
-        overlayNameOnImage(`${languagePrefix}-match-${birdMatch}.png`, testTakerName, "Match");
-
+        overlayNameOnImage(`${selectedLanguage === 'english' ? 'eng' : 'vie'}-persona-${topResult.type}.png`, testTakerName, "Persona");
+        overlayNameOnImage(`${selectedLanguage === 'english' ? 'eng' : 'vie'}-match-${birdMatch}.png`, testTakerName, "Match");
         incrementQuizCompletions();
         getQuizCompletions();
     }
@@ -145,22 +127,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function getQuizCompletions() {
         const completionsRef = ref(database, 'quizCompletions');
         get(completionsRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                displayCompletionCountOnPhoto(snapshot.val());
-            } else {
-                displayCompletionCountOnPhoto(0);
-            }
+            displayCompletionCountOnPhoto(snapshot.exists() ? snapshot.val() : 0);
         }).catch((error) => {
             console.error("Error retrieving completions:", error);
         });
     }
 
     function displayCompletionCountOnPhoto(count) {
-        const overlayElement = document.getElementById("completionCountOverlay");
-        overlayElement.textContent = `Completions: ${count}`;
+        document.getElementById("completionCountOverlay").textContent = `Completions: ${count}`;
     }
 
-    // Language selection setup
     document.querySelectorAll('.language-button').forEach(button => {
         button.addEventListener('click', () => {
             selectedLanguage = button.dataset.language;
