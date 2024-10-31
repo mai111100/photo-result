@@ -28,7 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let weaverScore = 0, pelicanScore = 0, flycatcherScore = 0, owlScore = 0;
     let crowScore = 0, craneScore = 0, parakeetScore = 0, eagleScore = 0, pigeonScore = 0;
 
-    // Questions and bird matches as per original code...
+  // English and Vietnamese questions
+    const englishQuestions = [
+        { question: "You start your journey over the seashore...", choices: ["Imma start anyways...", "Nah, no need to mess up..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
+        { question: "Not long after your departure, a forest full of food appears. What do you do?", choices: ["Gather food and plan ahead - you’ll need it for later", "Enjoy the present - why worry so much about the future?"], weights: [{ weaverScore: 1 }, { parakeetScore: 1 }] },
+        { question: "As the sun sets, you reflect on your journey. What now?", choices: ["Think about how to do better next time", "Feel proud of everything you've achieved so far"], weights: [{ weaverScore: 1 }, { flycatcherScore: 1 }] },
+    ];
+
+    const vietnameseQuestions = [
+        { question: "Bạn chuẩn bị xuất phát từ bờ biển...", choices: ["Kệ - dân chơi không sợ...", "Thôi khoải. Tìm đường khác..."], weights: [{ flycatcherScore: 1 }, { crowScore: 1 }] },
+        // ...add remaining questions...
+    ];
+
+    // Bird matches for each personality type
+    const birdMatches = {
+        weaver: ["parakeet", "owl"],
+        pelican: ["owl", "eagle"],
+        // ...complete bird matches...
+    };
 
     function displayCurrentQuestion() {
         const questions = selectedLanguage === 'english' ? englishQuestions : vietnameseQuestions;
