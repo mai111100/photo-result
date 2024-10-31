@@ -1,3 +1,4 @@
+/* Main styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -83,4 +84,16 @@ h1 {
 
 #download-btn:hover {
     background-color: #218838;
+}
+
+#completionCountOverlay {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
 }
